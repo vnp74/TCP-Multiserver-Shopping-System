@@ -4,10 +4,61 @@
  */
 package com.mycompany.assign_02;
 
+import java.io.Serializable;
+
 /**
  *
  * @author VRAJ
  */
-public class BookOrder {
-    
+public class BookOrder implements Task, Serializable {
+    private int quantity;
+    private double unitPrice;
+    private double tax;
+    private double totalBill;
+    private static final double TAX_RATE = 0.10; // 10% tax rate for books
+
+    public BookOrder(int quantity, double unitPrice) {
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+        this.tax = 0;
+        this.totalBill = 0;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public double getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice() {
+        this.unitPrice = unitPrice;
+    }
+
+    public double getTax() {
+        return tax;
+    }
+
+    public double getTotalBill() {
+        return totalBill;
+    }
+
+    @Override
+    public void executeTask() {
+        double subtotal = quantity * unitPrice;
+        tax = subtotal * TAX_RATE;
+        totalBill = subtotal + tax;
+    }
+
+    @Override
+    public String getResult() {
+        return "Number of Books: " + quantity + "Price: " + unitPrice + "Tax: " + tax + "Total Bill: " + totalBill;
+
+    }
+
 }
