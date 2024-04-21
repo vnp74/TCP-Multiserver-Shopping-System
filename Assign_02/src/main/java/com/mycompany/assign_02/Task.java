@@ -9,5 +9,6 @@ package com.mycompany.assign_02;
  * @author VRAJ
  */
 public interface Task {
-    
+    void executeTask();
+    String getResult();
 }
