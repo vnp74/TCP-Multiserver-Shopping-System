@@ -32,6 +32,22 @@ public class ServerCoordinator {
     }
 
     public void start() {
-        System.out.println("ServerCoordinator is waiting for the connection...");
+        while (true) {
+            try (Socket clientSocket = serverSocket.accept();
+                    ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
+                    ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
+                System.out.println("Connection established with Client: " + clientSocket.getInetAddress().getHostAddress());
+
+                Object object = in.readObject();
+                if (object instanceof BookOrder) {
+                    handleBookOrder((BookOrder) object, out);
+                } else {
+                    out.writeObject("Unknown order type received.");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
+
 }
