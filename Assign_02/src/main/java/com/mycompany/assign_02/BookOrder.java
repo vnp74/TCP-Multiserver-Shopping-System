@@ -36,7 +36,7 @@ public class BookOrder implements Task, Serializable {
         return unitPrice;
     }
 
-    public void setUnitPrice() {
+    public void setUnitPrice(double unitPrice) {
         this.unitPrice = unitPrice;
     }
 
