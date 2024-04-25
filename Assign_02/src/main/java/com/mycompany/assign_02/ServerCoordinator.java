@@ -36,7 +36,8 @@ public class ServerCoordinator {
             try (Socket clientSocket = serverSocket.accept();
                     ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
                     ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
-                System.out.println("Connection established with Client: " + clientSocket.getInetAddress().getHostAddress());
+                System.out.println(
+                        "Connection established with Client: " + clientSocket.getInetAddress().getHostAddress());
 
                 Object object = in.readObject();
                 if (object instanceof BookOrder) {
@@ -50,4 +51,18 @@ public class ServerCoordinator {
         }
     }
 
+    private void handleBookOrder(BookOrder bookOrder, ObjectOutputStream clientOut) {
+        try (Socket serverBookSocket = new Socket("localhost", 8001);
+                ObjectOutputStream out = new ObjectOutputStream(serverBookSocket.getOutputStream());
+                ObjectInputStream in = new ObjectInputStream(serverMovieSocket.getInpurStream())) {
+
+            out.writeObject(movieOrder);
+            out.flush();
+
+            String result = (String) in.readObject();
+            clientOut.writeObject(result);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 }
