@@ -31,6 +31,26 @@ public class ServerMovie {
     }
 
     public void start() {
+        while (true) {
+            try (Socket clientSocket = serverSocket.accept();
+                    ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
+                    ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
+                System.out.println(
+                        "Connection established with client: " + clientSocket.getInetAddress().getHostAddress());
+
+                Object order = in.readObject();
+                if (order instanceof MovieOrder) {
+                    processOrder((MovieOrder) order, out);
+                } else {
+                    out.writeObject("Invalid order type received.");
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void processOrder(MovieOrder movieOrder, ObjectOutputStream out) {
 
     }
 }
