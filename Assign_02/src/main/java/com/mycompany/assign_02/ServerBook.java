@@ -36,8 +36,9 @@ public class ServerBook {
                     ObjectInputStream in = new ObjectInputStream(clienSocket.getInputStream());
                     ObjectOutputStream out = new ObjectOutputStream(clienSocket.getOutputStream())) {
 
-                System.out.println("Connection established with client: " + clienSocket.getInetAddress().getHostAddress());
-                        
+                System.out.println(
+                        "Connection established with client: " + clienSocket.getInetAddress().getHostAddress());
+
                 Object order = in.readObject();
                 if (order instanceof BookOrder) {
                     processOrder((BookOrder) order, out);
@@ -45,7 +46,6 @@ public class ServerBook {
                     out.writeObject("Invalid order type received.");
                 }
             } catch (IOException | ClassNotFoundException e) {
-                System.err.println("An error occurred while processing the order" e.getMessage());
                 e.printStackTrace();
             }
         }
