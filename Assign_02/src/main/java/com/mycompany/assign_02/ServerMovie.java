@@ -50,7 +50,13 @@ public class ServerMovie {
         }
     }
 
-    private void processOrder(MovieOrder movieOrder, ObjectOutputStream out) {
-
+    private void processOrder(MovieOrder movieOrder, ObjectOutputStream out) throws IOException {
+        try {
+            movieOrder.executeTask();
+            out.writeObject(movieOrder.getResult());
+        } catch (Exception e) {
+            System.err.println("Error processing order: " + e.getMessage());
+            out.writeObject("Error processing the movie order.");
+        }
     }
 }
