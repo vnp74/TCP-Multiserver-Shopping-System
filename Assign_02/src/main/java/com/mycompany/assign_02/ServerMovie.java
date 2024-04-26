@@ -35,8 +35,8 @@ public class ServerMovie {
             try (Socket clientSocket = serverSocket.accept();
                     ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
                     ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
-                System.out.println(
-                        "Connection established with client: " + clientSocket.getInetAddress().getHostAddress());
+
+                System.out.println("Connection established with client: " + clientSocket.getInetAddress().getHostAddress());
 
                 Object order = in.readObject();
                 if (order instanceof MovieOrder) {
