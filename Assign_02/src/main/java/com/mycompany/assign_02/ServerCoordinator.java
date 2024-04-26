@@ -20,24 +20,14 @@ public class ServerCoordinator {
         System.out.println("ServerCoordinator running on port " + port);
     }
 
-    public static void main(String[] args) {
-        try {
-            ServerCoordinator coordinator = new ServerCoordinator(8000);
-            coordinator.start();
-        } catch (IOException e) {
-            System.err.println("ServerCoordinator failed to start: " + e.getMessage());
-            e.printStackTrace();
-        }
-
-    }
-
     public void start() {
         while (true) {
             try (Socket clientSocket = serverSocket.accept();
                     ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
                     ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
-                
-                System.out.println("Connection established with Client: " + clientSocket.getInetAddress().getHostAddress());
+
+                System.out.println(
+                        "Connection established with Client: " + clientSocket.getInetAddress().getHostAddress());
 
                 Object object = in.readObject();
                 if (object instanceof BookOrder) {
@@ -64,5 +54,30 @@ public class ServerCoordinator {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    private void handleMovieOrder(MovieOrder movieOrder, ObjectOutputStream clientOut) throws IOException {
+        try (Socket serverMovieSocket = new Socket("localhost", 8002);
+                ObjectOutputStream out = new ObjectOutputStream(serverMovieSocket.getOutputStream());
+                ObjectInputStream in = new ObjectInputStream(serverMovieSocket.getInputStream())) {
+            out.writeObject(movieOrder);
+            out.flush();
+
+            String result = (String) in.readObject();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Failed to deserializr the response from ServerMovie: " + e.getMessage());
+            clientOut.writeObject("Error processing movie order.");
+        }
+    }
+
+    public static void main(String[] args) {
+        try {
+            ServerCoordinator coordinator = new ServerCoordinator(8000);
+            coordinator.start();
+        } catch (IOException e) {
+            System.err.println("ServerCoordinator failed to start: " + e.getMessage());
+            e.printStackTrace();
+        }
+
     }
 }
