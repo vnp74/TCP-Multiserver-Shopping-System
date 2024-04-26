@@ -26,8 +26,7 @@ public class ServerCoordinator {
                     ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
                     ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
 
-                System.out.println(
-                        "Connection established with Client: " + clientSocket.getInetAddress().getHostAddress());
+                System.out.println("Connection established with Client: " + clientSocket.getInetAddress().getHostAddress());
 
                 Object object = in.readObject();
                 if (object instanceof BookOrder) {

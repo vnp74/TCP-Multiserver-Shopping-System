@@ -33,9 +33,10 @@ public class ServerBook {
     public void start() {
         while (true) {
             try (Socket clienSocket = serverSocket.accept();
-            ObjectInputStream in = new ObjectInputStream(clienSocket.getInputStream());
-            ObjectOutputStream out = new ObjectOutputStream(clienSocket.getOutputStream())) {
+                    ObjectInputStream in = new ObjectInputStream(clienSocket.getInputStream());
+                    ObjectOutputStream out = new ObjectOutputStream(clienSocket.getOutputStream())) {
                 System.out.println("Connection established with client: " + clienSocket.getInetAddress().getHostAddress());
+                        
 
                 Object order = in.readObject();
                 if (order instanceof BookOrder) {
@@ -43,11 +44,19 @@ public class ServerBook {
                 } else {
                     out.writeObject("Invalid order type received.");
                 }
-           } catch (IOException | ClassNotFoundException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
-           }
-        } 
+            }
+        }
     }
 
-    private void processOrder()
+    private void processOrder(BookOrder bookOrder, ObjectOutputStream out) throws IOException {
+        try {
+            bookOrder.executeTask();
+            out.writeObject(bookOrder.getResult());
+        } catch (Exception e) {
+            System.err.println("Error processing order: " + e.getMessage());
+            out.writeObject("Error processing the book order.");
+        }
+    }
 }
