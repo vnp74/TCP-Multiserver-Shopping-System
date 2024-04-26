@@ -54,7 +54,7 @@ public class ServerMovie {
         try {
             movieOrder.executeTask();
             out.writeObject(movieOrder.getResult());
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.err.println("Error processing order: " + e.getMessage());
             out.writeObject("Error processing the movie order.");
         }

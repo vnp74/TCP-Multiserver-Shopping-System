@@ -1,17 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.assign_02;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-/**
- *
- * @author VRAJ
- */
 public class ServerCoordinator {
     private ServerSocket serverSocket;
 
@@ -26,15 +18,19 @@ public class ServerCoordinator {
                     ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
                     ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
 
-                System.out.println("Connection established with Client: " + clientSocket.getInetAddress().getHostAddress());
+                System.out.println(
+                        "Connection established with Client: " + clientSocket.getInetAddress().getHostAddress());
 
                 Object object = in.readObject();
                 if (object instanceof BookOrder) {
                     handleBookOrder((BookOrder) object, out);
+                } else if (object instanceof MovieOrder) {
+                    handleMovieOrder((MovieOrder) object, out);
                 } else {
                     out.writeObject("Unknown order type received.");
                 }
-            } catch (IOException e) {
+            } catch (IOException | ClassNotFoundException e) {
+                System.err.println("Error handling client request: " + e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -43,14 +39,15 @@ public class ServerCoordinator {
     private void handleBookOrder(BookOrder bookOrder, ObjectOutputStream clientOut) {
         try (Socket serverBookSocket = new Socket("localhost", 8001);
                 ObjectOutputStream out = new ObjectOutputStream(serverBookSocket.getOutputStream());
-                ObjectInputStream in = new ObjectInputStream(serverMovieSocket.getInpurStream())) {
+                ObjectInputStream in = new ObjectInputStream(serverBookSocket.getInputStream())) {
 
-            out.writeObject(movieOrder);
+            out.writeObject(bookOrder);
             out.flush();
 
             String result = (String) in.readObject();
             clientOut.writeObject(result);
         } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Error processing book order: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -63,8 +60,9 @@ public class ServerCoordinator {
             out.flush();
 
             String result = (String) in.readObject();
+            clientOut.writeObject(result);
         } catch (ClassNotFoundException e) {
-            System.err.println("Failed to deserializr the response from ServerMovie: " + e.getMessage());
+            System.err.println("Failed to deserialize the response from ServerMovie: " + e.getMessage());
             clientOut.writeObject("Error processing movie order.");
         }
     }
@@ -77,6 +75,5 @@ public class ServerCoordinator {
             System.err.println("ServerCoordinator failed to start: " + e.getMessage());
             e.printStackTrace();
         }
-
     }
 }
