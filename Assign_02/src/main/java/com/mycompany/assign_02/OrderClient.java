@@ -114,7 +114,7 @@ public class OrderClient {
 
     public static void main(String[] args) {
         try {
-            OrderClient client = new OrderClient("localhost", 8000);
+            OrderClient client = new OrderClient("localhost", 2501);
             client.start();
         } catch (IOException e) {
             System.err.println("Failed to start OrderClient: " + e.getMessage());
