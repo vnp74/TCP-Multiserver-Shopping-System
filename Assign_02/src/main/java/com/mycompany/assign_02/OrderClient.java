@@ -111,7 +111,7 @@ public class OrderClient {
     public static void main(String[] args) {
         try {
             OrderClient client = new OrderClient("localhost", 8000);
-
+            client.start();
         } catch (IOException e) {
             e.printStackTrace();
         }

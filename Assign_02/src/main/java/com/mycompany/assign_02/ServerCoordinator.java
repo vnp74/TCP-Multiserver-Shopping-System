@@ -3,6 +3,7 @@ package com.mycompany.assign_02;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class ServerCoordinator {
     private ServerSocket serverSocket;
@@ -29,9 +30,12 @@ public class ServerCoordinator {
                 } else {
                     out.writeObject("Unknown order type received.");
                 }
-            } catch (IOException | ClassNotFoundException e) {
-                System.err.println("Error handling client request: " + e.getMessage());
-                e.printStackTrace();
+            } catch (SocketException e) {
+                System.err.println("SocketException: Possible connection reset by client - " + e.getMessage());
+            } catch (IOException e) {
+                System.err.println("IOException: Error in input/output - " + e.getMessage());
+            } catch (ClassNotFoundException e) {
+                System.err.println("ClassNotFoundException: Error reading object - " + e.getMessage());
             }
         }
     }
