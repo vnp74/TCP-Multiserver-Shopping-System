@@ -25,8 +25,8 @@ public class ServerCoordinator {
 
     private void handleClient(Socket clientSocket) {
         try (clientSocket;
-             ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
-             ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
+                ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
+                ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
 
             System.out.println("Connection established with Client: " + clientSocket.getInetAddress().getHostAddress());
             Object object = in.readObject();
@@ -44,9 +44,9 @@ public class ServerCoordinator {
     }
 
     private void handleBookOrder(BookOrder bookOrder, ObjectOutputStream clientOut) {
-        try (Socket serverBookSocket = new Socket("localhost", 8001);
-             ObjectOutputStream out = new ObjectOutputStream(serverBookSocket.getOutputStream());
-             ObjectInputStream in = new ObjectInputStream(serverBookSocket.getInputStream())) {
+        try (Socket serverBookSocket = new Socket("localhost", 2502);
+                ObjectOutputStream out = new ObjectOutputStream(serverBookSocket.getOutputStream());
+                ObjectInputStream in = new ObjectInputStream(serverBookSocket.getInputStream())) {
 
             System.out.println("ServerCoordinator Received Client Object: Sending to Server for Book ....");
             out.writeObject(bookOrder);
@@ -62,9 +62,9 @@ public class ServerCoordinator {
     }
 
     private void handleMovieOrder(MovieOrder movieOrder, ObjectOutputStream clientOut) {
-        try (Socket serverMovieSocket = new Socket("localhost", 8002);
-             ObjectOutputStream out = new ObjectOutputStream(serverMovieSocket.getOutputStream());
-             ObjectInputStream in = new ObjectInputStream(serverMovieSocket.getInputStream())) {
+        try (Socket serverMovieSocket = new Socket("localhost", 2503);
+                ObjectOutputStream out = new ObjectOutputStream(serverMovieSocket.getOutputStream());
+                ObjectInputStream in = new ObjectInputStream(serverMovieSocket.getInputStream())) {
 
             System.out.println("ServerCoordinator Received Client Object: Sending to Server for Movie ....");
             out.writeObject(movieOrder);
@@ -81,7 +81,7 @@ public class ServerCoordinator {
 
     public static void main(String[] args) {
         try {
-            ServerCoordinator coordinator = new ServerCoordinator(8000);
+            ServerCoordinator coordinator = new ServerCoordinator(2501);
             coordinator.start();
         } catch (IOException e) {
             System.err.println("ServerCoordinator failed to start: " + e.getMessage());

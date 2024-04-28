@@ -54,7 +54,7 @@ public class ServerMovie {
 
     public static void main(String[] args) {
         try {
-            ServerMovie serverMovie = new ServerMovie(8002); // Make sure the port matches your configuration
+            ServerMovie serverMovie = new ServerMovie(2503);
             serverMovie.start();
         } catch (IOException e) {
             System.err.println("ServerMovie failed to start: " + e.getMessage());
