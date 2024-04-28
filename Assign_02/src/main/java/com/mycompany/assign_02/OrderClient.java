@@ -1,17 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.assign_02;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
-/**
- *
- * @author VRAJ
- */
 public class OrderClient {
     private Socket socket;
     private ObjectOutputStream out;
@@ -28,16 +20,16 @@ public class OrderClient {
     public void start() {
         try {
             int option;
-
             do {
-                System.out.println("Please Place your order by selecting a number:");
-                System.out.println("1. Purchase Book");
-                System.out.println("2. Purchase Movie");
-                System.out.println("3. Exit");
-                System.out.println("Enter your option: ");
+                System.out.println("\nPLEASE PLACE YOUR ORDER BY SELECTING A NUMBER");
+                System.out.println("********************************");
+                System.out.println("1.Purchase Book");
+                System.out.println("2.Purchase Movie");
+                System.out.println("3.Exit");
+                System.out.print("Enter your option: ");
 
                 option = scanner.nextInt();
-                scanner.nextLine();
+                scanner.nextLine(); // consume the rest of the line
 
                 switch (option) {
                     case 1:
@@ -57,6 +49,7 @@ public class OrderClient {
                 }
             } while (option != 3);
         } catch (IOException e) {
+            System.err.println("An error occurred: " + e.getMessage());
             e.printStackTrace();
         } finally {
             cleanUp();
@@ -64,46 +57,57 @@ public class OrderClient {
     }
 
     private void handleBookOrder() throws IOException {
-        System.out.println("Enter the number of books: ");
+        System.out.print("Enter the number of books: ");
         int quantity = scanner.nextInt();
-        System.out.println("Enter the book price: ");
+        System.out.print("Enter the book price: ");
         double price = scanner.nextDouble();
+        scanner.nextLine(); // consume the rest of the line
         BookOrder bookOrder = new BookOrder(quantity, price);
 
         sendOrder(bookOrder);
     }
 
     private void handleMovieOrder() throws IOException {
-        System.out.println("Enter the number of movies: ");
+        System.out.print("Enter the number of movies: ");
         int quantity = scanner.nextInt();
-        System.out.println("Enter the movie price: ");
+        System.out.print("Enter the movie price: ");
         double price = scanner.nextDouble();
+        scanner.nextLine(); // consume the rest of the line
         MovieOrder movieOrder = new MovieOrder(quantity, price);
 
         sendOrder(movieOrder);
     }
 
     private void sendOrder(Object order) throws IOException {
+        System.out.println("SENDING OBJECT TO SERVER........");
         out.writeObject(order);
         out.flush();
 
         try {
             Object response = in.readObject();
+            System.out.println("RECEIVING COMPUTED OBJECT FROM SERVER.......");
             if (response instanceof String) {
-                System.out.println((String) response);
+                System.out.println(response);
             }
         } catch (ClassNotFoundException e) {
+            System.err.println("Class not found: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
     private void cleanUp() {
         try {
-            in.close();
-            out.close();
-            socket.close();
-            scanner.close();
+            if (in != null)
+                in.close();
+            if (out != null)
+                out.close();
+            if (socket != null)
+                socket.close();
+            if (scanner != null)
+                scanner.close();
+            System.out.println("Client connection closed.");
         } catch (IOException e) {
+            System.err.println("An error occurred while closing resources: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -113,6 +117,7 @@ public class OrderClient {
             OrderClient client = new OrderClient("localhost", 8000);
             client.start();
         } catch (IOException e) {
+            System.err.println("Failed to start OrderClient: " + e.getMessage());
             e.printStackTrace();
         }
     }
