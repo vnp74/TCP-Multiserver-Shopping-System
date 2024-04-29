@@ -8,7 +8,16 @@ package com.mycompany.assign_02;
  *
  * @author VRAJ
  */
+
+/**
+ * The Task interface defines a general structure for tasks that can be
+ * executed,
+ * specifically providing methods to perform a task and retrieve its result.
+ * This is useful for defining operations that involve processing and outputting
+ * a result.
+ */
 public interface Task {
-    void executeTask();
-    String getResult();
+    void executeTask(); // Executes the primary operation of the task.
+
+    String getResult(); // Retrieves the result of the task after execution
 }

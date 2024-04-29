@@ -5,14 +5,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ServerMovie {
-    private ServerSocket serverSocket;
+    private ServerSocket serverSocket; // Server socket to accept connections
     private static int orderCount = 0; // Static counter to keep track of orders
 
+    // Sets up a server on the specified port to handle movie orders.
     public ServerMovie(int port) throws IOException {
         serverSocket = new ServerSocket(port);
         System.out.println("ServerMovie running on port " + port);
     }
 
+    // Accepts client connections continuously and processes incoming movie orders.
     public void start() {
         System.out.println("ServerMovie is ready and waiting for client orders...");
         while (true) {
@@ -40,10 +42,12 @@ public class ServerMovie {
         }
     }
 
+    // Processes a movie order by calculating the total bill and sending the result
+    // back to the client.
     private void processOrder(MovieOrder movieOrder, ObjectOutputStream out) throws IOException {
         try {
-            movieOrder.executeTask();
-            String result = movieOrder.getResult();
+            movieOrder.executeTask(); // Calculate total bill based on order details
+            String result = movieOrder.getResult(); // Retrieve the computed result
             System.out.println("Computed Total Bill for Movie Order. Sending back to client....");
             out.writeObject(result);
         } catch (IOException e) {

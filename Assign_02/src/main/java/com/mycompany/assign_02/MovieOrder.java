@@ -15,8 +15,7 @@ public class MovieOrder implements Task, Serializable {
     private double unitPrice;
     private double tax;
     private double totalBill;
-    private static final double TAX_RATE = 0.30;
-    
+    private static final double TAX_RATE = 0.30; // tax rate 30%
 
     public MovieOrder(int quantity, double unitPrice) {
         this.quantity = quantity;
@@ -32,6 +31,7 @@ public class MovieOrder implements Task, Serializable {
         totalBill = subtotal + tax;
     }
 
+    // returns the result string
     @Override
     public String getResult() {
         return "Number of Movies: " + quantity + " Price: " + unitPrice + " Tax: " + tax + " Total Bill: " + totalBill;

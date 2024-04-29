@@ -48,6 +48,10 @@ public class BookOrder implements Task, Serializable {
         return totalBill;
     }
 
+    /*
+     * Executes the task of calculating the total bill for the book order.
+     * This includes computing the tax based on the tax rate.
+     */
     @Override
     public void executeTask() {
         double subtotal = quantity * unitPrice;
@@ -55,6 +59,7 @@ public class BookOrder implements Task, Serializable {
         totalBill = subtotal + tax;
     }
 
+    // returns result string
     @Override
     public String getResult() {
         return "Number of Books: " + quantity + "Price: " + unitPrice + "Tax: " + tax + "Total Bill: " + totalBill;

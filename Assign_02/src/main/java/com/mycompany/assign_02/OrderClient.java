@@ -5,10 +5,10 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class OrderClient {
-    private Socket socket;
-    private ObjectOutputStream out;
-    private ObjectInputStream in;
-    private Scanner scanner;
+    private Socket socket; // Client socket for connection
+    private ObjectOutputStream out; // Stream to send objects to the server
+    private ObjectInputStream in; // Stream to receive objects from the server
+    private Scanner scanner; // Scanner to read user input from console
 
     public OrderClient(String host, int port) throws IOException {
         socket = new Socket(host, port);
@@ -16,6 +16,8 @@ public class OrderClient {
         in = new ObjectInputStream(socket.getInputStream());
         scanner = new Scanner(System.in);
     }
+
+    // Starts the client interaction loop allowing users to place orders
 
     public void start() {
         try {
@@ -56,6 +58,8 @@ public class OrderClient {
         }
     }
 
+    // Handles book order by asking the user for quantity and price, and sending the
+    // order to the server.
     private void handleBookOrder() throws IOException {
         System.out.print("Enter the number of books: ");
         int quantity = scanner.nextInt();
@@ -67,6 +71,8 @@ public class OrderClient {
         sendOrder(bookOrder);
     }
 
+    // Handles movie order by asking the user for quantity and price, and sending
+    // the order to the server.
     private void handleMovieOrder() throws IOException {
         System.out.print("Enter the number of movies: ");
         int quantity = scanner.nextInt();
@@ -78,6 +84,7 @@ public class OrderClient {
         sendOrder(movieOrder);
     }
 
+    // Sends an order object to the server and handles the server's response.
     private void sendOrder(Object order) throws IOException {
         System.out.println("SENDING OBJECT TO SERVER........");
         out.writeObject(order);
@@ -95,6 +102,7 @@ public class OrderClient {
         }
     }
 
+    // Closes all resources including streams and socket.
     private void cleanUp() {
         try {
             if (in != null)

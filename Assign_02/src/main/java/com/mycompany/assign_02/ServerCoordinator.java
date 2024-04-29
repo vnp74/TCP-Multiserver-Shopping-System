@@ -5,30 +5,38 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ServerCoordinator {
-    private ServerSocket serverSocket;
+    private ServerSocket serverSocket; // Listen for client connections
+    private static int clientNumber = 0; // Static variable to keep track of client numbers
 
+    // Sets up a server on the specified port.
     public ServerCoordinator(int port) throws IOException {
         serverSocket = new ServerSocket(port);
         System.out.println("ServerCoordinator running on port " + port);
     }
 
+    // Accepts client connections continuously and handles each in a new thread.
     public void start() {
         while (true) {
             try {
                 Socket clientSocket = serverSocket.accept();
-                new Thread(() -> handleClient(clientSocket)).start();
+                synchronized (ServerCoordinator.class) {
+                    clientNumber++; // Increment client number safely within synchronized block
+                }
+                int currentClientNumber = clientNumber; // Capture the current client number for use in the thread
+                new Thread(() -> handleClient(clientSocket, currentClientNumber)).start();
             } catch (IOException e) {
                 System.err.println("IOException: Error accepting client connection - " + e.getMessage());
             }
         }
     }
 
-    private void handleClient(Socket clientSocket) {
+    // Manages client requests and delegates processing based on order type.
+    private void handleClient(Socket clientSocket, int clientNum) {
         try (clientSocket;
                 ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
                 ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
 
-            System.out.println("Connection established with Client: " + clientSocket.getInetAddress().getHostAddress());
+            System.out.println("Connection established with Client #" + clientNum);
             Object object = in.readObject();
 
             if (object instanceof BookOrder) {
@@ -43,6 +51,7 @@ public class ServerCoordinator {
         }
     }
 
+    // Forwards book orders to a ServerBook and returns results to client.
     private void handleBookOrder(BookOrder bookOrder, ObjectOutputStream clientOut) {
         try (Socket serverBookSocket = new Socket("localhost", 2502);
                 ObjectOutputStream out = new ObjectOutputStream(serverBookSocket.getOutputStream());
@@ -61,6 +70,7 @@ public class ServerCoordinator {
         }
     }
 
+    // Forwards movie orders to a ServerMovie and returns results to client.
     private void handleMovieOrder(MovieOrder movieOrder, ObjectOutputStream clientOut) {
         try (Socket serverMovieSocket = new Socket("localhost", 2503);
                 ObjectOutputStream out = new ObjectOutputStream(serverMovieSocket.getOutputStream());

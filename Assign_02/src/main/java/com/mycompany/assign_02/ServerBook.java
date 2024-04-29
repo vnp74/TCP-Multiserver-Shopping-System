@@ -5,18 +5,20 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ServerBook {
-    private ServerSocket serverSocket;
+    private ServerSocket serverSocket; // Server socket to accept connections
     private static int orderCount = 0; // Static counter to keep track of book orders
 
+    // Constructs a server that listens on the specified port.
     public ServerBook(int port) throws IOException {
         serverSocket = new ServerSocket(port);
         System.out.println("ServerBook running on port " + port);
     }
 
+    // Starts the server to accept and process client orders continuously.
     public void start() {
         System.out.println("ServerBook is ready and waiting for client orders...");
         while (true) {
-            try (Socket clientSocket = serverSocket.accept();
+            try (Socket clientSocket = serverSocket.accept(); // Accept a client connection
                     ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
                     ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
 
